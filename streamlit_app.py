@@ -14,10 +14,13 @@ st.set_page_config(
 # Declare some useful functions.
 
 @st.cache_data
-def get_data():
+def get_plex_price():
     url = "https://evetycoon.com/api/v1/market/orders/44992"
     r = requests.get(url)
-    return data.json()
+    data = r.json()
+    df = pd.DataFrame(data['orders'])
+    plex_price =df[~df.isBuyOrder].price.min()
+    return plex_price
 
 @st.cache_data
 def get_gdp_data():
@@ -82,79 +85,82 @@ But it's otherwise a great (and did I mention _free_?) source of data.
 ''
 ''
 
-st.write("Test change")
-st.write(st.secrets["weolfijwerfwerlwiejrqwme"])
-min_value = gdp_df['Year'].min()
-max_value = gdp_df['Year'].max()
+# st.write("Test change")
+# st.write(st.secrets["weolfijwerfwerlwiejrqwme"])
 
-from_year, to_year = st.slider(
-    'Which years are you interested in?',
-    min_value=min_value,
-    max_value=max_value,
-    value=[min_value, max_value])
+plex_price = get_plex_price()
+st.metric(label="PLEX", plex_price)
+# min_value = gdp_df['Year'].min()
+# max_value = gdp_df['Year'].max()
 
-countries = gdp_df['Country Code'].unique()
+# from_year, to_year = st.slider(
+#     'Which years are you interested in?',
+#     min_value=min_value,
+#     max_value=max_value,
+#     value=[min_value, max_value])
 
-if not len(countries):
-    st.warning("Select at least one country")
+# countries = gdp_df['Country Code'].unique()
 
-selected_countries = st.multiselect(
-    'Which countries would you like to view?',
-    countries,
-    ['DEU', 'FRA', 'GBR', 'BRA', 'MEX', 'JPN'])
+# if not len(countries):
+#     st.warning("Select at least one country")
 
-''
-''
-''
+# selected_countries = st.multiselect(
+#     'Which countries would you like to view?',
+#     countries,
+#     ['DEU', 'FRA', 'GBR', 'BRA', 'MEX', 'JPN'])
 
-# Filter the data
-filtered_gdp_df = gdp_df[
-    (gdp_df['Country Code'].isin(selected_countries))
-    & (gdp_df['Year'] <= to_year)
-    & (from_year <= gdp_df['Year'])
-]
+# ''
+# ''
+# ''
 
-st.header('GDP over time', divider='gray')
+# # Filter the data
+# filtered_gdp_df = gdp_df[
+#     (gdp_df['Country Code'].isin(selected_countries))
+#     & (gdp_df['Year'] <= to_year)
+#     & (from_year <= gdp_df['Year'])
+# ]
 
-''
+# st.header('GDP over time', divider='gray')
 
-st.line_chart(
-    filtered_gdp_df,
-    x='Year',
-    y='GDP',
-    color='Country Code',
-)
+# ''
 
-''
-''
+# st.line_chart(
+#     filtered_gdp_df,
+#     x='Year',
+#     y='GDP',
+#     color='Country Code',
+# )
+
+# ''
+# ''
 
 
-first_year = gdp_df[gdp_df['Year'] == from_year]
-last_year = gdp_df[gdp_df['Year'] == to_year]
+# first_year = gdp_df[gdp_df['Year'] == from_year]
+# last_year = gdp_df[gdp_df['Year'] == to_year]
 
-st.header(f'GDP in {to_year}', divider='gray')
+# st.header(f'GDP in {to_year}', divider='gray')
 
-''
+# ''
 
-cols = st.columns(4)
+# cols = st.columns(4)
 
-for i, country in enumerate(selected_countries):
-    col = cols[i % len(cols)]
+# for i, country in enumerate(selected_countries):
+#     col = cols[i % len(cols)]
 
-    with col:
-        first_gdp = first_year[first_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-        last_gdp = last_year[last_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
+#     with col:
+#         first_gdp = first_year[first_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
+#         last_gdp = last_year[last_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
 
-        if math.isnan(first_gdp):
-            growth = 'n/a'
-            delta_color = 'off'
-        else:
-            growth = f'{last_gdp / first_gdp:,.2f}x'
-            delta_color = 'normal'
+#         if math.isnan(first_gdp):
+#             growth = 'n/a'
+#             delta_color = 'off'
+#         else:
+#             growth = f'{last_gdp / first_gdp:,.2f}x'
+#             delta_color = 'normal'
 
-        st.metric(
-            label=f'{country} GDP',
-            value=f'{last_gdp:,.0f}B',
-            delta=growth,
-            delta_color=delta_color
-        )
+#         st.metric(
+#             label=f'{country} GDP',
+#             value=f'{last_gdp:,.0f}B',
+#             delta=growth,
+#             delta_color=delta_color
+#         )
