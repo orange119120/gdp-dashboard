@@ -76,6 +76,8 @@ But it's otherwise a great (and did I mention _free_?) source of data.
 ''
 
 st.write("Test change")
+st.write(st.secrets["1239nl1j2k34nqaw98qweljkqwme"])
+1239nl1j2k34nqaw98qweljkqwme =  "qwei98qwd_lk134o183123123"
 min_value = gdp_df['Year'].min()
 max_value = gdp_df['Year'].max()
 
