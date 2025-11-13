@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import math
 from pathlib import Path
+import requests
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -11,6 +12,12 @@ st.set_page_config(
 
 # -----------------------------------------------------------------------------
 # Declare some useful functions.
+
+@st.cache_data
+def get_data():
+    url = "https://evetycoon.com/api/v1/market/orders/44992"
+    r = requests.get(url)
+    return data.json()
 
 @st.cache_data
 def get_gdp_data():
