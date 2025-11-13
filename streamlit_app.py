@@ -89,7 +89,7 @@ But it's otherwise a great (and did I mention _free_?) source of data.
 # st.write(st.secrets["weolfijwerfwerlwiejrqwme"])
 
 plex_price = get_plex_price()
-st.metric(label="PLEX", plex_price)
+st.metric(label="PLEX", value=plex_price)
 # min_value = gdp_df['Year'].min()
 # max_value = gdp_df['Year'].max()
 
