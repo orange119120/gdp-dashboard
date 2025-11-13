@@ -24,4 +24,4 @@ def get_plex_price():
 plex_price = get_plex_price()
 st.metric(label="PLEX", value=plex_price)
 
- t.markdown("[![Click me](app/static/plex.png)](https://streamlit.io)")
+st.markdown("[![Click me](app/static/plex.png)](https://streamlit.io)")
